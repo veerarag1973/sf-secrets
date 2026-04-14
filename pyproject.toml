@@ -46,8 +46,8 @@ dev = [
 spanforge-secrets = "spanforge_secrets.cli:main"
 
 [project.urls]
-"Source" = "https://github.com/spanforge/spanforge-secrets"
-"Bug Tracker" = "https://github.com/spanforge/spanforge-secrets/issues"
+"Source" = "https://github.com/veerarag1973/sf-secrets"
+"Bug Tracker" = "https://github.com/veerarag1973/sf-secrets/issues"
 
 # ---------------------------------------------------------------------------
 # Hatch build

@@ -42,7 +42,7 @@ spanforge-secrets --help
 Clone the repository and install with the `dev` extras:
 
 ```bash
-git clone https://github.com/spanforge/spanforge-secrets.git
+git clone https://github.com/veerarag1973/sf-secrets.git
 cd spanforge-secrets
 python -m venv .venv
 source .venv/bin/activate          # Windows: .venv\Scripts\activate

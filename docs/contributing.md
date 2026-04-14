@@ -14,7 +14,7 @@ Thank you for your interest in contributing to `spanforge-secrets`! This documen
 ### Clone and install
 
 ```bash
-git clone https://github.com/spanforge/spanforge-secrets.git
+git clone https://github.com/veerarag1973/sf-secrets.git
 cd spanforge-secrets
 python -m venv .venv
 source .venv/bin/activate   # Windows: .venv\Scripts\activate
@@ -151,7 +151,7 @@ If you want to add a PII pattern that is generic and not specific to secrets sca
 
 ## Reporting bugs
 
-Open an issue at https://github.com/spanforge/spanforge-secrets/issues with:
+Open an issue at https://github.com/veerarag1973/sf-secrets/issues with:
 
 - Python version and OS
 - `spanforge-secrets` and `spanforge` version (`pip show spanforge-secrets spanforge`)

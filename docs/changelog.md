@@ -70,4 +70,4 @@ Corrected `pyproject.toml` to declare `spanforge` as a required (`dependencies`)
 
 ---
 
-[1.0.0]: https://github.com/spanforge/spanforge-secrets/releases/tag/v1.0.0
+[1.0.0]: https://github.com/veerarag1973/sf-secrets/releases/tag/v1.0.0

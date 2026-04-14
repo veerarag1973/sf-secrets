@@ -362,7 +362,7 @@ def _emit_sarif(results: list[PIIScanResult]) -> None:
                     "driver": {
                         "name": "spanforge-secrets",
                         "version": "1.0.0",
-                        "informationUri": "https://github.com/spanforge/spanforge-secrets",
+                        "informationUri": "https://github.com/veerarag1973/sf-secrets",
                         "rules": rules,
                     }
                 },
