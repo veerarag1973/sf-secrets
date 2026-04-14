@@ -50,7 +50,7 @@ Detects international and domestic phone numbers including formats with spaces, 
 | Sensitivity | `high` |
 | Validator | Regex + SSA range validation |
 | Category | `pii` |
-| Source | `spanforge.redact` (regex) + `spanforge-secrets` (validator) |
+| Source | `spanforge.redact` (regex + validator) |
 
 Detects US Social Security Numbers in `AAA-GG-SSSS` format. After regex matching, the SSA range validator rejects:
 - Area `000`, `666`, or `900–999`
@@ -167,17 +167,21 @@ Detects Indian Permanent Account Numbers (PAN) in the format `AAAAA0000A` — 5 
 | Category | `pii` |
 | Source | `spanforge.redact` (upstream) |
 
-Detects dates in three common formats. After regex matching, a calendar check discards structurally valid but impossible dates (e.g. February 30).
+Detects dates in five common formats. After regex matching, a calendar check discards structurally valid but impossible dates (e.g. February 30).
 
 **Supported formats:**
 - `YYYY-MM-DD` — ISO 8601 (`1990-07-15`)
-- `DD/MM/YYYY` — European format (`15/07/1990`)
 - `MM/DD/YYYY` — US format (`07/15/1990`)
+- `DD/MM/YYYY` — Indian / European format (`15/07/1990`)
+- `DD Mon YYYY` — day + abbreviated month (`15 Jul 1990`)
+- `Month DD, YYYY` — long month name (`July 15, 1990`)
 
 **Matches:**
 - `1990-07-15`
-- `15/07/1990`
 - `07/15/1990`
+- `15/07/1990`
+- `15 Jul 1990`
+- `July 15, 1990`
 
 **Does not match:**
 - `1990-02-30` (February 30 — calendar invalid)
@@ -196,7 +200,7 @@ Detects dates in three common formats. After regex matching, a calendar check di
 | Category | `pii` |
 | Source | `spanforge.redact` (upstream) |
 
-Detects US-style street addresses with a house number, at least one capitalised word, and a recognised road suffix.
+Detects US-style street addresses with a house number, one or more words, and a recognised road suffix.
 
 **Recognised suffixes:** `Street`, `St`, `Avenue`, `Ave`, `Boulevard`, `Blvd`, `Road`, `Rd`, `Drive`, `Dr`, `Lane`, `Ln`, `Court`, `Ct`, `Place`, `Pl`, `Way`, `Terrace`, `Terr`, `Circle`, `Cir`
 
@@ -204,9 +208,9 @@ Detects US-style street addresses with a house number, at least one capitalised 
 - `42 Maple Street`
 - `1600 Pennsylvania Avenue`
 - `221B Baker St`
+- `42 maple street`
 
 **Does not match:**
-- `42 street` (no capitalised word before suffix)
 - `Maple Street` (no house number)
 
 ---

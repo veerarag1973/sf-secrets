@@ -140,11 +140,11 @@ spanforge-secrets verify-chain AUDIT_LOG --secret HMAC_SECRET
 |---|---|
 | `AUDIT_LOG` | Path to the JSONL audit log. Each line must be a valid JSON object representing a `spanforge.event.Event`. Blank lines are skipped. |
 
-### Required options
+### Options
 
 #### `--secret HMAC_SECRET`
 
-The HMAC signing secret that was used when the audit chain was created. This is passed directly to `spanforge.signing.verify_chain(org_secret=...)`.
+The HMAC signing secret that was used when the audit chain was created. This is passed directly to `spanforge.signing.verify_chain(org_secret=...)`. If omitted, the `SPANFORGE_HMAC_SECRET` environment variable is used. Exits `2` if neither is provided.
 
 ---
 

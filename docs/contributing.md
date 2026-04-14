@@ -31,7 +31,7 @@ The `dev` extras install `pytest`, `pytest-cov`, `ruff`, and `mypy`.
 python -m pytest tests/ -q
 ```
 
-All 104 tests must pass before submitting a pull request. If you've added new functionality, add tests for it.
+All 111 tests must pass before submitting a pull request. If you've added new functionality, add tests for it.
 
 ### Coverage report
 
@@ -88,6 +88,7 @@ The project is typed with `mypy --strict`. All new code must be fully annotated.
 src/spanforge_secrets/
 ├── __init__.py       Public API exports
 ├── __main__.py       python -m spanforge_secrets entry point
+├── py.typed          PEP 561 typed package marker
 ├── scanner.py        Core scanning engine
 ├── chain.py          Audit chain verification wrapper
 ├── cli.py            CLI argument parsing and sub-commands
@@ -96,7 +97,7 @@ src/spanforge_secrets/
 └── _verhoeff.py      Re-export of spanforge.redact._verhoeff_check
 
 tests/
-└── test_spanforge_secrets.py   All tests (104 total)
+└── test_spanforge_secrets.py   All tests (111 total)
 ```
 
 ---

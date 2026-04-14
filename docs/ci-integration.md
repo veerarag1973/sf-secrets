@@ -115,7 +115,7 @@ SARIF severity mapping:
 
 ```yaml
       - name: Install scanners
-        run: pip install "spanforge-secrets==1.0.0" "spanforge>=2.0.0"
+        run: pip install "spanforge-secrets==1.0.0" "spanforge>=2.0.2"
 ```
 
 ---

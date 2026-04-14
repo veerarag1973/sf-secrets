@@ -232,12 +232,12 @@ repos:
 ## Platform source
 
 Built on top of:
-- `spanforge.redact` — base PII patterns, Luhn check, Verhoeff check
+- `spanforge.redact` — all 10 PII patterns, validators (`_is_valid_ssn`, `_is_valid_date`), Luhn check, Verhoeff check
 - `spanforge.signing` — `verify_chain()` for audit-chain verification
 
-Extensions unique to this package: `date_of_birth` pattern, `address` pattern,
-5 API key patterns, `scan_text()`, `PIIScanHit.category`, `PIIScanResult.source`,
-file I/O chain verification, and the complete CLI.
+Extensions unique to this package: 5 API key patterns, `scan_text()`,
+`PIIScanHit.category`, `PIIScanResult.source`, file I/O chain verification,
+and the complete CLI.
 
 This package is a reference implementation of the `spanforge` framework.
-`spanforge>=2.0.0` is a required runtime dependency.
+`spanforge>=2.0.2` is a required runtime dependency.

@@ -56,4 +56,4 @@ spanforge-secrets
 └── _verhoeff.py      Re-export shim → spanforge.redact._verhoeff_check
 ```
 
-The scanner builds on `spanforge.redact` patterns (email, phone, SSN, credit card, IP, UKNI, Aadhaar, PAN) and adds `date_of_birth`, `address`, and 5 API key patterns unique to this package.
+The scanner builds on `spanforge.redact` patterns (email, phone, SSN, credit card, IP, UKNI, Aadhaar, PAN, date of birth, address) and adds 5 API key patterns unique to this package.

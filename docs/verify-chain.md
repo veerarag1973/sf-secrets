@@ -29,7 +29,7 @@ spanforge-secrets verify-chain AUDIT_LOG --secret HMAC_SECRET
 | Argument | Description |
 |---|---|
 | `AUDIT_LOG` | Path to the JSONL file. Each non-blank line must be a valid JSON object. |
-| `--secret` | The HMAC signing key used when the chain was created. **Required.** |
+| `--secret` | The HMAC signing key used when the chain was created. If omitted, falls back to the `SPANFORGE_HMAC_SECRET` environment variable. Exits `2` if neither is provided. |
 
 ### Output
 
@@ -63,13 +63,17 @@ spanforge-secrets verify-chain AUDIT_LOG --secret HMAC_SECRET
 
 ## Store the HMAC secret securely
 
-The HMAC secret must match what was used during chain creation. Store it as a CI/CD secret and pass via environment variable:
+The HMAC secret must match what was used during chain creation. Store it as a CI/CD secret:
 
 ```bash
-# Shell
+# Pass via --secret flag
 spanforge-secrets verify-chain audit.jsonl --secret "$AUDIT_HMAC_SECRET"
 
-# GitHub Actions
+# Or set the environment variable (--secret can be omitted)
+export SPANFORGE_HMAC_SECRET="$AUDIT_HMAC_SECRET"
+spanforge-secrets verify-chain audit.jsonl
+
+# GitHub Actions — either approach works
 spanforge-secrets verify-chain audit.jsonl --secret "${{ secrets.AUDIT_HMAC_SECRET }}"
 ```
 

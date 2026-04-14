@@ -48,12 +48,12 @@ Expected output (formatted for readability):
 {
   "gate": "CI-Gate-01",
   "clean": false,
-  "total_violations": 4,
+  "total_violations": 3,
   "results": [
     {
       "source": "prompts/user_prompt.txt",
       "clean": false,
-      "violation_count": 4,
+      "violation_count": 3,
       "scanned_strings": 1,
       "hits": [
         { "entity_type": "address",       "path": "<text>", "match_count": 1, "sensitivity": "medium", "category": "pii" },

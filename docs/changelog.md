@@ -17,13 +17,13 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Thi
 - `PIIScanResult` dataclass — frozen, with fields `hits`, `scanned`, `source`; properties `clean` and `violation_count`; method `to_dict()`.
 - `extra_patterns` parameter on both scan functions for caller-supplied regex patterns.
 - `extra_sensitivity` parameter to override sensitivity levels for custom patterns.
-- `_is_valid_ssn()` — SSA range validation (area, group, serial) to eliminate false-positive SSNs.
-- `_is_valid_date()` — Calendar validation for `date_of_birth` detections to eliminate impossible dates.
+- `_is_valid_ssn()` — SSA range validation (area, group, serial) to eliminate false-positive SSNs. Imported from `spanforge.redact`.
+- `_is_valid_date()` — Calendar validation for `date_of_birth` detections to eliminate impossible dates. Imported from `spanforge.redact`.
 
 #### Pattern library (`_patterns.py`)
-- 8 base PII patterns imported from `spanforge.redact` (email, phone, ssn, credit_card, ip_address, uk_national_insurance, aadhaar, pan) — no duplication.
-- `date_of_birth` pattern — three formats: ISO 8601, European, US. Unique to this package.
-- `address` pattern — house number + capitalised words + road suffix. Unique to this package.
+- 10 PII patterns imported from `spanforge.redact` (email, phone, ssn, credit_card, ip_address, uk_national_insurance, date_of_birth, address, aadhaar, pan) — no duplication.
+- `date_of_birth` pattern — five formats: ISO 8601 (`YYYY-MM-DD`), US (`MM/DD/YYYY`), Indian/European (`DD/MM/YYYY`), `DD Mon YYYY`, and `Month DD, YYYY`. Provided by `spanforge>=2.0.2`.
+- `address` pattern — house number + word tokens + road suffix. Provided by `spanforge>=2.0.2`.
 - 5 API key patterns: `openai_api_key`, `anthropic_api_key`, `aws_access_key_id`, `aws_secret_access_key`, `gcp_service_account_key`.
 - `_SENSITIVITY_MAP` — maps all 15 entity types to their sensitivity level.
 
@@ -38,6 +38,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Thi
 #### CLI (`cli.py`)
 - `scan` sub-command: scans files, directories (recursive), or stdin.
 - `verify-chain` sub-command: verifies HMAC audit chains.
+- `--secret` flag for HMAC secret with `SPANFORGE_HMAC_SECRET` environment variable fallback.
 - `--format json` (default) and `--format sarif` output modes.
 - SARIF 2.1.0 output compatible with GitHub Advanced Security / Code Scanning.
 - `--diff` mode: scans only `git diff --staged` added lines for use as a pre-commit hook.
@@ -48,12 +49,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Thi
 - Exit codes: 0 (clean), 1 (violations or chain invalid), 2 (usage error), 3 (I/O/format error).
 
 #### Packaging
-- `spanforge>=2.0.0` declared as a required runtime dependency; this is a **reference implementation** of the spanforge framework.
+- `spanforge>=2.0.2` declared as a required runtime dependency; this is a **reference implementation** of the spanforge framework.
 - `py.typed` marker for PEP 561 type information.
 - `python -m spanforge_secrets` entry point via `__main__.py`.
 
 #### Tests
-- 104 tests covering all entity types, validators, CLI commands, SARIF output, ignore files, diff mode, and chain verification.
+- 111 tests covering all entity types, validators, CLI commands, SARIF output, ignore files, diff mode, chain verification, and Indian date formats.
 - `TestVerifyChainFileIntegration` — 4 integration tests using real `spanforge.signing` and `spanforge.event` APIs, gated with `pytest.importorskip`.
 
 ---
@@ -62,7 +63,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Thi
 
 ### De-duplication
 
-Removed all duplicated implementations of Luhn, Verhoeff, and the 8 base PII patterns — these are now imported directly from `spanforge.redact`. Only `date_of_birth` and `address` patterns are defined locally (not present in upstream `spanforge`).
+Removed all duplicated implementations of Luhn, Verhoeff, and the 8 base PII patterns — these are now imported directly from `spanforge.redact`. As of `spanforge>=2.0.2`, all 10 PII patterns (including `date_of_birth` and `address`) and validators (`_is_valid_ssn`, `_is_valid_date`) come from upstream — no local duplication.
 
 ### Packaging alignment
 

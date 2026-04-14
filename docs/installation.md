@@ -5,7 +5,7 @@
 | Requirement | Version |
 |---|---|
 | Python | 3.9 or later |
-| spanforge | 2.0.0 or later |
+| spanforge | 2.0.2 or later |
 
 `spanforge` is a required runtime dependency. `spanforge-secrets` is a reference implementation built on top of it.
 
@@ -66,7 +66,7 @@ The `dev` extras install:
 python -m pytest tests/ -q
 ```
 
-All 104 tests should pass. Tests that exercise spanforge internals directly are gated with `pytest.importorskip("spanforge")` and are automatically skipped if `spanforge` is not installed.
+All 111 tests should pass. Tests that exercise spanforge internals directly are gated with `pytest.importorskip("spanforge")` and are automatically skipped if `spanforge` is not installed.
 
 ---
 
@@ -89,7 +89,7 @@ RUN pip install spanforge-secrets spanforge
 Or pin specific versions for reproducibility:
 
 ```dockerfile
-RUN pip install "spanforge-secrets==1.0.0" "spanforge>=2.0.0"
+RUN pip install "spanforge-secrets==1.0.0" "spanforge>=2.0.2"
 ```
 
 ---
