@@ -12,7 +12,7 @@ sensitivity level.
 from __future__ import annotations
 
 import re
-from collections.abc import Mapping
+from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 from typing import Any
 
@@ -25,6 +25,18 @@ from spanforge_secrets._patterns import (
 )
 from spanforge.redact import _is_valid_ssn as _is_valid_ssn  # type: ignore[import]
 from spanforge.redact import _is_valid_date as _is_valid_date  # type: ignore[import]
+
+# ---------------------------------------------------------------------------
+# Post-validation registry  {label: validator(match_str) -> bool}
+# ---------------------------------------------------------------------------
+# Adding a new validator requires only a new dict entry — no if-chain changes.
+
+_POST_VALIDATORS: dict[str, Callable[[str], bool]] = {
+    "credit_card": _luhn_check,
+    "aadhaar": _verhoeff_check,
+    "ssn": _is_valid_ssn,
+    "date_of_birth": _is_valid_date,
+}
 
 
 @dataclass(frozen=True)
@@ -93,15 +105,14 @@ class PIIScanResult:
 # ---------------------------------------------------------------------------
 # Internal helpers
 # ---------------------------------------------------------------------------
+# Module-level pattern cache (base patterns are Final — safe to cache once)
+# ---------------------------------------------------------------------------
 
-def _all_patterns() -> dict[str, tuple[re.Pattern[str], str]]:
-    """Return merged {label: (pattern, category)} dict."""
-    combined: dict[str, tuple[re.Pattern[str], str]] = {}
-    for label, pat in _PII_PATTERNS.items():
-        combined[label] = (pat, "pii")
-    for label, pat in _API_KEY_PATTERNS.items():
-        combined[label] = (pat, "api_key")
-    return combined
+_ALL_PATTERNS: dict[str, tuple[re.Pattern[str], str]] = {
+    **{label: (pat, "pii") for label, pat in _PII_PATTERNS.items()},
+    **{label: (pat, "api_key") for label, pat in _API_KEY_PATTERNS.items()},
+}
+
 
 
 
@@ -119,27 +130,10 @@ def _check_string(
         if not matches:
             continue
 
-        # Post-validation: Luhn for credit card
-        if label == "credit_card":
-            matches = [m for m in matches if _luhn_check(m.group())]
-            if not matches:
-                continue
-
-        # Post-validation: Verhoeff for Aadhaar
-        if label == "aadhaar":
-            matches = [m for m in matches if _verhoeff_check(m.group())]
-            if not matches:
-                continue
-
-        # Post-validation: SSA range check for SSN
-        if label == "ssn":
-            matches = [m for m in matches if _is_valid_ssn(m.group())]
-            if not matches:
-                continue
-
-        # Post-validation: calendar check for date_of_birth
-        if label == "date_of_birth":
-            matches = [m for m in matches if _is_valid_date(m.group())]
+        # Post-validation: look up validator in registry, skip if all fail
+        validator = _POST_VALIDATORS.get(label)
+        if validator is not None:
+            matches = [m for m in matches if validator(m.group())]
             if not matches:
                 continue
 
@@ -204,7 +198,7 @@ def scan_payload(
     if not scan_raw:
         return PIIScanResult(hits=[], scanned=0, source=source)
 
-    patterns = _all_patterns()
+    patterns: dict[str, tuple[re.Pattern[str], str]] = dict(_ALL_PATTERNS)
     _extra_sens: dict[str, str] = extra_sensitivity or {}
 
     # Extra caller patterns are tagged as pii; sensitivity defaults to medium
@@ -271,7 +265,7 @@ def scan_text(
     if not scan_raw:
         return PIIScanResult(hits=[], scanned=0, source=source)
 
-    patterns = _all_patterns()
+    patterns: dict[str, tuple[re.Pattern[str], str]] = dict(_ALL_PATTERNS)
     _extra_sens: dict[str, str] = extra_sensitivity or {}
     if extra_patterns:
         for label, pat in extra_patterns.items():

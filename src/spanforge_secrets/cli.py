@@ -29,11 +29,16 @@ from __future__ import annotations
 import argparse
 import fnmatch
 import json
+import os
 import sys
+from importlib.metadata import version as _pkg_version
 from pathlib import Path
 from typing import Any
 
 from spanforge_secrets.scanner import PIIScanResult, scan_payload, scan_text
+
+# Package version — single source of truth from package metadata.
+_VERSION: str = _pkg_version("spanforge-secrets")
 
 # Binary extensions that should never be scanned as text.
 _BINARY_EXTENSIONS: frozenset[str] = frozenset({
@@ -451,8 +456,19 @@ def _cmd_verify_chain(args: argparse.Namespace) -> int:
     """Run the verify-chain sub-command.  Returns exit code."""
     from spanforge_secrets.chain import verify_chain_file  # local import
 
+    # Resolve secret: --secret flag takes priority, then env var.
+    secret: str | None = getattr(args, "secret", None)
+    if not secret:
+        secret = os.environ.get("SPANFORGE_HMAC_SECRET")
+    if not secret:
+        _die(
+            "HMAC secret is required. Pass --secret or set the "
+            "SPANFORGE_HMAC_SECRET environment variable.",
+            code=2,
+        )
+
     try:
-        result = verify_chain_file(args.audit_log, org_secret=args.secret)
+        result = verify_chain_file(args.audit_log, org_secret=secret)
     except ImportError as exc:
         _die(str(exc), code=3)
     except (FileNotFoundError, ValueError) as exc:
@@ -571,9 +587,13 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     vc_p.add_argument(
         "--secret",
-        required=True,
+        required=False,
+        default=None,
         metavar="HMAC_SECRET",
-        help="HMAC signing secret used when the chain was created.",
+        help=(
+            "HMAC signing secret used when the chain was created. "
+            "If omitted, the SPANFORGE_HMAC_SECRET environment variable is used."
+        ),
     )
 
     return parser
